@@ -4,14 +4,14 @@ const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const secretKey = crypto.randomBytes(32).toString("hex");
 
-// Dummy users for local authentication
-const users = [
-  { id: 1, username: "Chetna", password: "chetna" },
-  { id: 2, username: "Suba", password: "suba" },
-];
-
+// Passport uses localstrategy to authenticate users based on a username and password
 passport.use(
   new LocalStrategy((username, password, done) => {
+    // Dummy users for local authentication
+    const users = [
+      { id: 1, username: "Chetna", password: "chetna" },
+      { id: 2, username: "Suba", password: "suba" },
+    ];
     const user = users.find(
       (u) => u.username === username && u.password === password
     );
@@ -22,10 +22,12 @@ passport.use(
     }
   })
 );
+// Serialize the user by storing their user ID in the session
 passport.serializeUser((user, done) => {
   done(null, user.id);
 });
 
+//finding or identifing the user with the provided ID
 passport.deserializeUser((id, done) => {
   const user = users.find((u) => u.id === id);
   done(null, user);
@@ -34,7 +36,7 @@ passport.deserializeUser((id, done) => {
 module.exports = {
   initialize: passport.initialize(),
   session: passport.session(),
-  authenticateLocal: passport.authenticate("local", { session: true }),
+  authenticateLocal: passport.authenticate("local"),
   generateToken: (user) =>
     jwt.sign({ id: user.id, username: user.username }, secretKey, {
       expiresIn: "1h",

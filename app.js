@@ -8,7 +8,7 @@ const authConfig = require("./auth-config");
 const app = express();
 //application running on port 3000
 const port = 3000;
-
+//storing user specific information across the application
 app.use(
   session({
     secret: authConfig.secretKey,
@@ -38,20 +38,20 @@ app.post("/login", authConfig.authenticateLocal, (req, res) => {
   });
 });
 app.get("/", (req, res) => {
-  let token = req.headers.authorization?.split(" ")[1];
-  console.log("token", token);
-  if (token) {
-    try {
-      const decoded = authConfig.verifyToken(token);
-      console.log(`${decoded.username} is logged in.`);
-      res.json({
-        message: "User is logged in",
-        username: decoded.username,
-      });
-    } catch (error) {
-      return res.status(401).json({ message: "Unauthorized" });
-    }
-  }
+  // let token = req.headers.authorization?.split(" ")[1];
+  // console.log("token", token);
+  // if (token) {
+  //   try {
+  //     const decoded = authConfig.verifyToken(token);
+  //     console.log(`${decoded.username} is logged in.`);
+  //     res.json({
+  //       message: "User is logged in",
+  //       username: decoded.username,
+  //     });
+  //   } catch (error) {
+  //     return res.status(401).json({ message: "Unauthorized" });
+  //   }
+  // }
   // console.log(req.isAuthenticated());
   if (req.isAuthenticated()) {
     res.json(initialTitle);
